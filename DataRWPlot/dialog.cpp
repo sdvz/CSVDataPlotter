@@ -16,6 +16,12 @@ Dialog::Dialog(QWidget *parent) :
     model = new QStandardItemModel(this);
     setModelWithCSVData(model, myDataFilePath);
     ui->tableView->setModel(model);
+
+//    ui->plot->addGraph();
+//    ui->plot->graph(0)->setData();
+//    ui->plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle));
+//    ui->plot->xAxis->setRange(0,model->);
+//    ui->plot->yAxis->setRange(0,size+1);
 }
 
 Dialog::~Dialog()
