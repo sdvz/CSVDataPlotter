@@ -17,11 +17,18 @@ Dialog::Dialog(QWidget *parent) :
     setModelWithCSVData(model, myDataFilePath);
     ui->tableView->setModel(model);
 
-//    ui->plot->addGraph();
-//    ui->plot->graph(0)->setData();
-//    ui->plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle));
-//    ui->plot->xAxis->setRange(0,model->);
-//    ui->plot->yAxis->setRange(0,size+1);
+    int size = 10;
+    QVector<double> x(size), y(size);
+
+    for (int i = 0; i < size; i++){
+        x[i] = y[i] = i+1;
+    }
+
+    ui->plot->addGraph();
+    ui->plot->graph(0)->setData(x,y);
+    ui->plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle));
+    ui->plot->xAxis->setRange(0,size+1);
+    ui->plot->yAxis->setRange(0,size+1);
 }
 
 Dialog::~Dialog()
