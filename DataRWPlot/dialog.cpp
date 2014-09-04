@@ -11,7 +11,7 @@ static const float minY = 0;
 static const float maxY = 1400;
 
 void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath);
-
+void itemchangedslot(QStandardItem *item);
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -20,11 +20,12 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
     QString myDataFilePath = "C:/Users/Sage/Downloads/mvcdata.csv";
-    QVector<double> xData, yData;
     model = new QStandardItemModel(this);
     setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
 
     ui->tableView->setModel(model);
+
+    connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(itemchangedslot(QStandardItem*)) );
 
     ui->plot->clearGraphs();
     ui->plot->addGraph();
@@ -119,7 +120,7 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
         if(!rowsOfData.at(row).isEmpty()){
         dataFromRow = rowsOfData.at(row).split(',');
 
-        qDebug() << dataFromRow.at(0).toDouble() << dataFromRow.at(1).toDouble();
+//        qDebug() << dataFromRow.at(0).toDouble() << dataFromRow.at(1).toDouble();
 
         xData->append(dataFromRow.at(0).toDouble());
         yData->append(dataFromRow.at(1).toDouble());
@@ -135,6 +136,21 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
         }
     }
 
+}
+
+void Dialog::itemchangedslot(QStandardItem *item){
+    qDebug() << item->row() << item->column();
+    int column = item->column();
+    int row = item->row();
+    if(column == 1){
+        yData.replace(row, item->text().toDouble());
+    }
+    else{
+        xData.replace(row, item->text().toDouble());
+    }
+
+    ui->plot->graph(0)->setData(xData,yData);
+    ui->plot->replot();
 }
 
 

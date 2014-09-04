@@ -19,10 +19,11 @@ public:
     ~Dialog();
 
 private slots:
-
+    void itemchangedslot(QStandardItem *item);
 private:
     Ui::Dialog *ui;
     QStandardItemModel *model;
+    QVector<double> xData, yData;
 };
 
 #endif // DIALOG_H
