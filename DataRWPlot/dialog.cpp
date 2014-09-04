@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QTextStream>
+#include <QFileInfo>
 
 static const float minX = -1;
 static const float maxX = 32;
@@ -11,6 +12,10 @@ static const float minY = 0;
 static const float maxY = 1400;
 
 void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath);
+void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath);
+void backupDataFile(QString datafilepath);
+
+//SLOTS
 void itemchangedslot(QStandardItem *item);
 
 
@@ -22,6 +27,7 @@ Dialog::Dialog(QWidget *parent) :
     QString myDataFilePath = "C:/Users/Sage/Downloads/mvcdata.csv";
     model = new QStandardItemModel(this);
     setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
+    backupDataFile(myDataFilePath);
 
     ui->tableView->setModel(model);
 
@@ -153,4 +159,29 @@ void Dialog::itemchangedslot(QStandardItem *item){
     ui->plot->replot();
 }
 
+void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath){
+    //write to file
+
+    for (int row = 0; row < xData->size(); row++){
+
+    }
+}
+
+void backupDataFile(QString datafilepath){
+
+    QFile stream(datafilepath);
+    QFileInfo fileInfo(datafilepath);
+    bool copySuccess;
+
+    QString newName = QString("backup_") + fileInfo.fileName();
+
+
+    copySuccess = stream.copy(datafilepath, newName);
+    if (copySuccess){
+        qDebug() << "Data Backup Successful";
+    }
+    else {
+        qDebug() << "Data Backup Failed";
+    }
+}
 
