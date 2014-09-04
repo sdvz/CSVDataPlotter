@@ -19,7 +19,9 @@ public:
     ~Dialog();
 
 private slots:
-    void itemchangedslot(QStandardItem *item);
+    void dataItemChangedSlot(QStandardItem *item);
+    void on_saveChanges_pushButton_clicked();
+
 private:
     Ui::Dialog *ui;
     QStandardItemModel *model;

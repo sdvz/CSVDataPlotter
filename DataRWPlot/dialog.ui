@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
+    <width>1223</width>
     <height>671</height>
    </rect>
   </property>
@@ -18,20 +18,53 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>381</width>
-     <height>231</height>
+     <width>321</width>
+     <height>591</height>
     </rect>
    </property>
   </widget>
   <widget class="QCustomPlot" name="plot" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>260</y>
+     <x>340</x>
+     <y>10</y>
      <width>871</width>
-     <height>401</height>
+     <height>651</height>
     </rect>
    </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>630</y>
+     <width>321</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="saveChanges_pushButton">
+      <property name="text">
+       <string>Save Changes</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="discardChanges_pushButton">
+      <property name="text">
+       <string>Discard Changes</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="quit_pushButton">
+      <property name="text">
+       <string>Quit</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

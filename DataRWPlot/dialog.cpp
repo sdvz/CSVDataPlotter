@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <QFileInfo>
 
+QStringList headers;
+
 static const float minX = -1;
 static const float maxX = 32;
 static const float minY = 0;
@@ -33,7 +35,7 @@ Dialog::Dialog(QWidget *parent) :
 
     ui->tableView->setModel(model);
 
-    connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(itemchangedslot(QStandardItem*)) );
+    connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(dataItemChangedSlot(QStandardItem*)) );
 
     ui->plot->clearGraphs();
     ui->plot->addGraph();
@@ -46,51 +48,6 @@ Dialog::Dialog(QWidget *parent) :
 Dialog::~Dialog()
 {
     delete ui;
-}
-
-void setModelWithCSVData(QStandardItemModel *model, QString datafilepath){
-
-
-    QString fileData;
-    QStringList dataFromRow;
-    QStringList rowsOfData;
-    QFile stream(datafilepath);
-
-    fileData.clear();
-    dataFromRow.clear();
-    rowsOfData.clear();
-
-    if (!stream.open(QFile::ReadOnly | QFile::WriteOnly)){
-
-        qDebug() << "Could not open file. Make sure file has R/W Capabilities and retry.";
-        return;
-    }
-
-    fileData = stream.readAll();
-    rowsOfData = fileData.split('\n');
-    stream.close();
-
-
-    QStringList headers = rowsOfData.at(0).split(',');;
-
-    model->setHorizontalHeaderLabels(headers);
-
-
-
-    for (int row = 1; row < (rowsOfData.size()); row++){
-
-        if(!rowsOfData.at(row).isEmpty()){
-        dataFromRow = rowsOfData.at(row).split(',');
-
-        for (int col = 0; col < dataFromRow.size(); col++)
-            {
-                //set model to data
-                QStandardItem *item = new QStandardItem(dataFromRow.at(col));
-                model->setItem(row-1, col, item);
-            }
-        }
-    }
-
 }
 
 void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath){
@@ -117,7 +74,7 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
     stream.close();
 
 
-    QStringList headers = rowsOfData.at(0).split(',');;
+    headers = rowsOfData.at(0).split(',');
 
     model->setHorizontalHeaderLabels(headers);
 
@@ -146,7 +103,7 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
 
 }
 
-void Dialog::itemchangedslot(QStandardItem *item){
+void Dialog::dataItemChangedSlot(QStandardItem *item){
     qDebug() << item->row() << item->column();
     int column = item->column();
     int row = item->row();
@@ -156,6 +113,7 @@ void Dialog::itemchangedslot(QStandardItem *item){
     else{
         xData.replace(row, item->text().toDouble());
     }
+    qDebug() << xData.at(row) << yData.at(row);
 
     ui->plot->graph(0)->setData(xData,yData);
     ui->plot->replot();
@@ -164,15 +122,16 @@ void Dialog::itemchangedslot(QStandardItem *item){
 void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath){
     //write to file
     QString dataFromRow;
-    QStringList data;
+    QString data;
 
+    data = headers.at(0) + "," + headers.at(1) + "\n";
     int size = xData->size();
 
     for (int row = 0; row < size; row++){
     dataFromRow = QString::number(xData->at(row)) + "," + QString::number(yData->at(row)) + "\n";
-    qDebug() << dataFromRow;
     data += dataFromRow;
     }
+    qDebug() << data;
 }
 
 void backupDataFile(QString datafilepath){
@@ -193,3 +152,9 @@ void backupDataFile(QString datafilepath){
     }
 }
 
+
+void Dialog::on_saveChanges_pushButton_clicked()
+{
+    qDebug() << "save button clicked";
+    writeXYDataToFile(&xData, &yData,"C:/Users/Sage/Downloads/mvcdata.csv");
+}
