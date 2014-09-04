@@ -56,51 +56,43 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
     QString fileData;
     QStringList dataFromRow;
     QStringList rowsOfData;
-    QFile stream(datafilepath);
+    QFile file(datafilepath);
 
 
     fileData.clear();
     dataFromRow.clear();
     rowsOfData.clear();
 
-    if (!stream.open(QFile::ReadOnly | QFile::WriteOnly)){
+    if (file.open(QFile::ReadWrite)){
+        QTextStream stream(&file);
+        fileData = stream.readAll();
+        rowsOfData = fileData.split('\n');
+        file.close();
 
-        qDebug() << "Could not open file. Make sure file has R/W Capabilities and retry.";
-        return;
-    }
+        headers = rowsOfData.at(0).split(',');
+        model->setHorizontalHeaderLabels(headers);
 
-    fileData = stream.readAll();
-    rowsOfData = fileData.split('\n');
-    stream.close();
+        for (int row = 1; row < (rowsOfData.size()); row++){
 
+            if(!rowsOfData.at(row).isEmpty()){
+            dataFromRow = rowsOfData.at(row).split(',');
+            xData->append(dataFromRow.at(0).toDouble());
+            yData->append(dataFromRow.at(1).toDouble());
 
-    headers = rowsOfData.at(0).split(',');
-
-    model->setHorizontalHeaderLabels(headers);
-
-
-
-    for (int row = 1; row < (rowsOfData.size()); row++){
-
-        if(!rowsOfData.at(row).isEmpty()){
-        dataFromRow = rowsOfData.at(row).split(',');
-
-//        qDebug() << dataFromRow.at(0).toDouble() << dataFromRow.at(1).toDouble();
-
-        xData->append(dataFromRow.at(0).toDouble());
-        yData->append(dataFromRow.at(1).toDouble());
-
-//        qDebug() << xData.at(row - 1) << yData.at(row - 1);
-
-        for (int col = 0; col < dataFromRow.size(); col++)
-            {
-                //set model to data
-                QStandardItem *item = new QStandardItem(dataFromRow.at(col));
-                model->setItem(row-1, col, item);
+            for (int col = 0; col < dataFromRow.size(); col++)
+                {
+                    //set model to data
+                    QStandardItem *item = new QStandardItem(dataFromRow.at(col));
+                    model->setItem(row-1, col, item);
+                }
             }
         }
     }
-
+    else {
+        //
+        qDebug() << "Could not open file. Make sure file has R/W Capabilities and retry.";
+        return;
+    }
 }
 
 void Dialog::dataItemChangedSlot(QStandardItem *item){
@@ -123,27 +115,36 @@ void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString f
     //write to file
     QString dataFromRow;
     QString data;
+    QFile file(filepath);
 
-    data = headers.at(0) + "," + headers.at(1) + "\n";
-    int size = xData->size();
+    file.resize(0);
 
-    for (int row = 0; row < size; row++){
-    dataFromRow = QString::number(xData->at(row)) + "," + QString::number(yData->at(row)) + "\n";
-    data += dataFromRow;
+    if (file.open(QIODevice::ReadWrite)) {
+        QTextStream stream(&file);
+        data = headers.at(0) + "," + headers.at(1) + "\n";
+        int size = xData->size();
+
+        for (int row = 0; row < size; row++){
+            dataFromRow = QString::number(xData->at(row)) + "," + QString::number(yData->at(row)) + "\n";
+            data += dataFromRow;
+        }
+        stream << data;
+        }
+    else{
+        qDebug() << "File could not be opened.";
     }
-    qDebug() << data;
 }
 
 void backupDataFile(QString datafilepath){
 
-    QFile stream(datafilepath);
+    QFile file(datafilepath);
     QFileInfo fileInfo(datafilepath);
     bool copySuccess;
 
     QString newName = QString("backup_") + fileInfo.fileName();
 
 
-    copySuccess = stream.copy(datafilepath, newName);
+    copySuccess = file.copy(datafilepath, newName);
     if (copySuccess){
         qDebug() << "Data Backup Successful";
     }
