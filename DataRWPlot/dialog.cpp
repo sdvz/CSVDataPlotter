@@ -29,6 +29,8 @@ Dialog::Dialog(QWidget *parent) :
     setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
     backupDataFile(myDataFilePath);
 
+    writeXYDataToFile(&xData, &yData, myDataFilePath);
+
     ui->tableView->setModel(model);
 
     connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(itemchangedslot(QStandardItem*)) );
@@ -161,9 +163,15 @@ void Dialog::itemchangedslot(QStandardItem *item){
 
 void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath){
     //write to file
+    QString dataFromRow;
+    QStringList data;
 
-    for (int row = 0; row < xData->size(); row++){
+    int size = xData->size();
 
+    for (int row = 0; row < size; row++){
+    dataFromRow = QString::number(xData->at(row)) + "," + QString::number(yData->at(row)) + "\n";
+    qDebug() << dataFromRow;
+    data += dataFromRow;
     }
 }
 
