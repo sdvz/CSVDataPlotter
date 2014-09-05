@@ -8,7 +8,7 @@
 
 QStringList headers;
 QString backupDataFilePath;
-QString myDataFilePath = "C:/Users/Sage/Downloads/mvcdata.csv";
+QString myDataFilePath;
 
 static const float minX = -1;
 static const float maxX = 32;
@@ -33,22 +33,9 @@ Dialog::Dialog(QWidget *parent) :
 
     model = new QStandardItemModel(this);
     connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(dataItemChangedSlot(QStandardItem*)) );
-
-
-//    backupDataFile(myDataFilePath);
-//    setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
-
-
-//    ui->tableView->setModel(model);
-
-//    ui->plot->clearGraphs();
-//    ui->plot->addGraph();
-//    ui->plot->graph(0)->setData(xData,yData);
-//    ui->plot->xAxis->setRange(minX,maxX);
-//    ui->plot->yAxis->setRange(minY,maxY);
 }
 
-void Dialog::init(){
+void Dialog::initView(){
     model->blockSignals(1);
     backupDataFile(myDataFilePath);
     setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
@@ -62,6 +49,9 @@ void Dialog::init(){
     ui->plot->xAxis->setRange(minX,maxX);
     ui->plot->yAxis->setRange(minY,maxY);
     ui->plot->replot();
+
+    ui->CSVFileLabel->setText(myDataFilePath);
+
     model->blockSignals(0);
 }
 
@@ -103,7 +93,7 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
 
             for (int col = 0; col < dataFromRow.size(); col++)
                 {
-                    //set model to data
+                    //populate model with CSV Data
                     QStandardItem *item = new QStandardItem(dataFromRow.at(col));
                     model->setItem(row-1, col, item);
                 }
@@ -212,5 +202,5 @@ void Dialog::on_applyPlotWindow_released()
 void Dialog::on_browse_pushButton_released()
 {
     myDataFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "Comma Seperated (*.csv);;");
-    init();
+    initView();
 }

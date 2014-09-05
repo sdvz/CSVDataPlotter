@@ -153,22 +153,28 @@
     <rect>
      <x>380</x>
      <y>30</y>
-     <width>75</width>
-     <height>23</height>
+     <width>91</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Browse</string>
+    <string>Load CSV File</string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="filepath_plainTextEdit">
+  <widget class="QLabel" name="CSVFileLabel">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>500</x>
      <y>30</y>
      <width>231</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="text">
+    <string>No File Selected</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
   <zorder>layoutWidget</zorder>
@@ -178,7 +184,7 @@
   <zorder>layoutWidget</zorder>
   <zorder>applyPlotWindow</zorder>
   <zorder>browse_pushButton</zorder>
-  <zorder>filepath_plainTextEdit</zorder>
+  <zorder>CSVFileLabel</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

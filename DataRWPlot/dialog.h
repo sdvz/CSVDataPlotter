@@ -19,7 +19,7 @@ public:
     QStandardItemModel *model;
     QVector<double> xData, yData;
     void configureViewWithFilePath(QString filepath);
-    void Dialog::init();
+    void initView();
     ~Dialog();
 
 private slots:
