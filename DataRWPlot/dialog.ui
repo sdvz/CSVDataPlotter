@@ -27,9 +27,9 @@
    <property name="geometry">
     <rect>
      <x>360</x>
-     <y>10</y>
+     <y>100</y>
      <width>851</width>
-     <height>581</height>
+     <height>491</height>
     </rect>
    </property>
   </widget>
@@ -46,13 +46,13 @@
     <string>Apply</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>360</x>
      <y>640</y>
      <width>731</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -70,7 +70,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>360</x>
@@ -110,7 +110,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -148,19 +148,37 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="browse_pushButton">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>30</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Browse</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="filepath_plainTextEdit">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>30</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <zorder>layoutWidget</zorder>
+  <zorder>layoutWidget</zorder>
   <zorder>tableView</zorder>
   <zorder>plot</zorder>
   <zorder>layoutWidget</zorder>
-  <zorder>xMin_doubleSpinBox</zorder>
-  <zorder>xMax_doubleSpinBox</zorder>
-  <zorder>minY_doubleSpinBox</zorder>
-  <zorder>maxY_doubleSpinBox</zorder>
-  <zorder>label</zorder>
-  <zorder>label_2</zorder>
-  <zorder>label_3</zorder>
-  <zorder>label_4</zorder>
   <zorder>applyPlotWindow</zorder>
-  <zorder>saveChanges_pushButton</zorder>
+  <zorder>browse_pushButton</zorder>
+  <zorder>filepath_plainTextEdit</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

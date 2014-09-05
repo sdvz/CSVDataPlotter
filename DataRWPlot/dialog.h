@@ -16,6 +16,9 @@ class Dialog : public QDialog
 
 public:
     explicit Dialog(QWidget *parent = 0);
+    QStandardItemModel *model;
+    QVector<double> xData, yData;
+    void configureViewWithFilePath(QString filepath);
     ~Dialog();
 
 private slots:
@@ -24,10 +27,11 @@ private slots:
     void on_discardChanges_pushButton_released();
     void on_applyPlotWindow_released();
 
+    void on_browse_pushButton_released();
+
 private:
     Ui::Dialog *ui;
-    QStandardItemModel *model;
-    QVector<double> xData, yData;
+
 };
 
 #endif // DIALOG_H

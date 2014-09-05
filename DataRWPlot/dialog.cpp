@@ -18,9 +18,12 @@ static const float maxY = 1400;
 void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath);
 void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath);
 void backupDataFile(QString datafilepath);
+void configureViewWithFilePath(QString filepath);
 
 //SLOTS
+void configureViewWithFilePath(QString filepath){
 
+}
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
@@ -153,11 +156,9 @@ void backupDataFile(QString dataFile){
         qDebug() << "Data Backup Successful";
     }
     else {
-        qDebug() << "Data Backup Failed";
+        qDebug() << "Data Backup Failed Or Already Exists";
     }
 
-//    QFileInfo backupDataFileInfo;
-//    backupDataFilePath = backupDataFileInfo.absoluteFilePath();
 }
 
 
@@ -188,4 +189,9 @@ void Dialog::on_applyPlotWindow_released()
     ui->plot->xAxis->setRange(ui->xMin_doubleSpinBox->value(),ui->xMax_doubleSpinBox->value());
     ui->plot->yAxis->setRange(ui->minY_doubleSpinBox->value(),ui->maxY_doubleSpinBox->value());
     ui->plot->replot();
+}
+
+void Dialog::on_browse_pushButton_released()
+{
+    myDataFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "Comma Seperated (*.csv);;");
 }
