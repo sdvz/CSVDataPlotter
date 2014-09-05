@@ -7,23 +7,19 @@
 #include <QFileInfo>
 
 QStringList headers;
-QString backupDataFilePath;
 QString myDataFilePath;
 
+//Default Plot Window Values
 static const float minX = -1;
 static const float maxX = 32;
 static const float minY = 0;
 static const float maxY = 1400;
 
-void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath);
+//CSV Data Functions
+void setModelAndDataVectorsWithCSV(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath);
 void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath);
 void backupDataFile(QString datafilepath);
 void configureViewWithFilePath(QString filepath);
-
-//SLOTS
-void configureViewWithFilePath(QString filepath){
-
-}
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
@@ -36,18 +32,27 @@ Dialog::Dialog(QWidget *parent) :
 }
 
 void Dialog::initView(){
-    model->blockSignals(1);
-    backupDataFile(myDataFilePath);
-    setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
 
+    //Block signals to avoid multiple itemChanged signals
+    model->blockSignals(1);
+
+
+    backupDataFile(myDataFilePath);
+    setModelAndDataVectorsWithCSV(&xData, &yData, model, myDataFilePath);
 
     ui->tableView->setModel(model);
 
+    //Add Graph and Data
     ui->plot->clearGraphs();
     ui->plot->addGraph();
     ui->plot->graph(0)->setData(xData,yData);
+
+    //Set Axes
     ui->plot->xAxis->setRange(minX,maxX);
     ui->plot->yAxis->setRange(minY,maxY);
+    ui->plot->xAxis->setLabel(headers.at(0));
+    ui->plot->yAxis->setLabel(headers.at(1));
+
     ui->plot->replot();
 
     ui->CSVFileLabel->setText(myDataFilePath);
@@ -60,14 +65,69 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath){
 
+// SLOT FUNCTIONS /////////////
+
+
+void Dialog::on_saveChanges_pushButton_released()
+{
+    qDebug() << "Saved";
+    writeXYDataToFile(&xData, &yData,"C:/Users/Sage/Downloads/mvcdata.csv");
+}
+
+void Dialog::on_discardChanges_pushButton_released()
+{
+    model->blockSignals(1);
+    setModelAndDataVectorsWithCSV(&xData, &yData, model, myDataFilePath);
+    ui->tableView->reset();
+
+    ui->plot->graph(0)->clearData();
+    ui->plot->graph(0)->setData(xData,yData);
+    ui->plot->replot();
+
+    model->blockSignals(0);
+}
+
+void Dialog::on_applyPlotWindow_released()
+{
+    //edit plot window based on UI values
+    ui->plot->xAxis->setRange(ui->xMin_doubleSpinBox->value(),ui->xMax_doubleSpinBox->value());
+    ui->plot->yAxis->setRange(ui->minY_doubleSpinBox->value(),ui->maxY_doubleSpinBox->value());
+    ui->plot->replot();
+}
+
+void Dialog::on_browse_pushButton_released()
+{
+    myDataFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "Comma Seperated (*.csv);;");
+    initView();
+}
+
+void Dialog::dataItemChangedSlot(QStandardItem *item){
+    int column = item->column();
+    int row = item->row();
+    if(column == 1){
+        yData.replace(row, item->text().toDouble());
+    }
+    else{
+        xData.replace(row, item->text().toDouble());
+    }
+
+    ui->plot->graph(0)->clearData();
+    ui->plot->graph(0)->setData(xData,yData);
+    ui->plot->replot();
+
+}
+
+
+// DATA FUNCTIONS /////////////
+
+
+void setModelAndDataVectorsWithCSV(QVector<double> *xData, QVector<double> *yData, QStandardItemModel *model, QString datafilepath){
 
     QString fileData;
     QStringList dataFromRow;
     QStringList rowsOfData;
     QFile file(datafilepath);
-
 
     fileData.clear();
     dataFromRow.clear();
@@ -107,33 +167,16 @@ void setModelAndDataWithCSVData(QVector<double> *xData, QVector<double> *yData, 
     }
 }
 
-void Dialog::dataItemChangedSlot(QStandardItem *item){
-    qDebug() << item->row() << item->column();
-    int column = item->column();
-    int row = item->row();
-    if(column == 1){
-        yData.replace(row, item->text().toDouble());
-    }
-    else{
-        xData.replace(row, item->text().toDouble());
-    }
-    //qDebug() << xData.at(row) << yData.at(row);
-
-    ui->plot->graph(0)->clearData();
-    ui->plot->graph(0)->setData(xData,yData);
-    ui->plot->replot();
-
-    qDebug() << yData.at(15);
-}
 
 void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString filepath){
-    //write to file
+
     QString dataFromRow;
     QString data;
     QFile file(filepath);
 
-    file.resize(0);
+    file.resize(0); //clears file
 
+    //read data from vectors into string
     if (file.open(QIODevice::ReadWrite)) {
         QTextStream stream(&file);
         data = headers.at(0) + "," + headers.at(1) + "\n";
@@ -150,6 +193,7 @@ void writeXYDataToFile(QVector<double> *xData, QVector<double> *yData, QString f
     }
 }
 
+
 void backupDataFile(QString dataFile){
 
     QFile file(dataFile);
@@ -158,49 +202,15 @@ void backupDataFile(QString dataFile){
 
     QString backupDataFile = QString("backup_") + dataFileInfo.fileName();
 
-
     copySuccess = file.copy(dataFile, backupDataFile);
     if (copySuccess){
-        qDebug() << "Data Backup Successful";
+        qDebug() << "Succesfully backed up CSV Data";
     }
     else {
-        qDebug() << "Data Backup Failed Or Already Exists";
+        qDebug() << "Failed to back up CSV Data. Check to see if already exists";
     }
 
 }
 
 
-void Dialog::on_saveChanges_pushButton_released()
-{
-    qDebug() << "save button clicked";
-    writeXYDataToFile(&xData, &yData,"C:/Users/Sage/Downloads/mvcdata.csv");
-}
 
-void Dialog::on_discardChanges_pushButton_released()
-{
-    model->blockSignals(1);
-    setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
-    ui->tableView->reset();
-
-    ui->plot->graph(0)->clearData();
-    ui->plot->graph(0)->setData(xData,yData);
-    ui->plot->replot();
-
-//    qDebug() << ui->plot->graphCount();
-
-    model->blockSignals(0);
-}
-
-void Dialog::on_applyPlotWindow_released()
-{
-    //edit plot window
-    ui->plot->xAxis->setRange(ui->xMin_doubleSpinBox->value(),ui->xMax_doubleSpinBox->value());
-    ui->plot->yAxis->setRange(ui->minY_doubleSpinBox->value(),ui->maxY_doubleSpinBox->value());
-    ui->plot->replot();
-}
-
-void Dialog::on_browse_pushButton_released()
-{
-    myDataFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "Comma Seperated (*.csv);;");
-    initView();
-}
