@@ -28,6 +28,8 @@ Dialog::Dialog(QWidget *parent) :
     ui->setupUi(this);
 
     model = new QStandardItemModel(this);
+
+    //connect model's itemchanged signal to its slot to update data vectors and replot graph
     connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(dataItemChangedSlot(QStandardItem*)) );
 }
 
@@ -148,6 +150,8 @@ void setModelAndDataVectorsWithCSV(QVector<double> *xData, QVector<double> *yDat
 
             if(!rowsOfData.at(row).isEmpty()){
             dataFromRow = rowsOfData.at(row).split(',');
+
+            //Add Datapoint to Data Vectors
             xData->append(dataFromRow.at(0).toDouble());
             yData->append(dataFromRow.at(1).toDouble());
 
