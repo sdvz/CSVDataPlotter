@@ -156,8 +156,8 @@ void backupDataFile(QString dataFile){
         qDebug() << "Data Backup Failed";
     }
 
-    QFileInfo backupDataFileInfo;
-    backupDataFilePath = backupDataFileInfo.absoluteFilePath();
+//    QFileInfo backupDataFileInfo;
+//    backupDataFilePath = backupDataFileInfo.absoluteFilePath();
 }
 
 
@@ -182,11 +182,10 @@ void Dialog::on_discardChanges_pushButton_released()
     model->blockSignals(0);
 }
 
-void Dialog::on_xMin_doubleSpinBox_editingFinished()
+void Dialog::on_applyPlotWindow_released()
 {
     //edit plot window
-//    qDebug() << ui->minX_doubleSpinBox->value() << ui->maxX_doubleSpinBox->value();
-    ui->plot->xAxis->setRange(-1*ui->xMin_doubleSpinBox->value(),ui->xMax_doubleSpinBox->value());
+    ui->plot->xAxis->setRange(ui->xMin_doubleSpinBox->value(),ui->xMax_doubleSpinBox->value());
     ui->plot->yAxis->setRange(ui->minY_doubleSpinBox->value(),ui->maxY_doubleSpinBox->value());
     ui->plot->replot();
 }

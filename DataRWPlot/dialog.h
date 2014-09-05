@@ -22,8 +22,7 @@ private slots:
     void dataItemChangedSlot(QStandardItem *item);
     void on_saveChanges_pushButton_released();
     void on_discardChanges_pushButton_released();
-
-    void on_xMin_doubleSpinBox_editingFinished();
+    void on_applyPlotWindow_released();
 
 private:
     Ui::Dialog *ui;
