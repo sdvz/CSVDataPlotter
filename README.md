@@ -1,6 +1,6 @@
 CSVDataPlotter
 ==============
-Compiling the program 
+A QT application that plots a CSV file and allows for editing. 
 
 
 INSTALLATION
@@ -13,6 +13,7 @@ INSTALLATION
 3) In your terminal, navigate to your desired folder where you would like to download the project.
 
 4) Use the command 'git clone CSVDataPlotter_REPO_URL'
+
 
 
 USAGE
