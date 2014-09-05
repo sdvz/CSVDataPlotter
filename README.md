@@ -7,8 +7,11 @@ INSTALLATION
 ============
 
 1) Download and Install QtCreater: http://qt-project.org/downloads
+
 2) Copy the repo URL for CSVDataPlotter
+
 3) In your terminal, navigate to your desired folder where you would like to download the project.
+
 4) Use the command 'git clone CSVDataPlotter_REPO_URL'
 
 
