@@ -32,19 +32,37 @@ Dialog::Dialog(QWidget *parent) :
     ui->setupUi(this);
 
     model = new QStandardItemModel(this);
+    connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(dataItemChangedSlot(QStandardItem*)) );
+
+
+//    backupDataFile(myDataFilePath);
+//    setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
+
+
+//    ui->tableView->setModel(model);
+
+//    ui->plot->clearGraphs();
+//    ui->plot->addGraph();
+//    ui->plot->graph(0)->setData(xData,yData);
+//    ui->plot->xAxis->setRange(minX,maxX);
+//    ui->plot->yAxis->setRange(minY,maxY);
+}
+
+void Dialog::init(){
+    model->blockSignals(1);
     backupDataFile(myDataFilePath);
     setModelAndDataWithCSVData(&xData, &yData, model, myDataFilePath);
 
 
     ui->tableView->setModel(model);
 
-    connect(model, SIGNAL(itemChanged(QStandardItem*)), this,SLOT(dataItemChangedSlot(QStandardItem*)) );
-
     ui->plot->clearGraphs();
     ui->plot->addGraph();
     ui->plot->graph(0)->setData(xData,yData);
     ui->plot->xAxis->setRange(minX,maxX);
     ui->plot->yAxis->setRange(minY,maxY);
+    ui->plot->replot();
+    model->blockSignals(0);
 }
 
 Dialog::~Dialog()
@@ -194,4 +212,5 @@ void Dialog::on_applyPlotWindow_released()
 void Dialog::on_browse_pushButton_released()
 {
     myDataFilePath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "Comma Seperated (*.csv);;");
+    init();
 }
